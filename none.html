@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tengo algo que preguntarte</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fbeff0; --bg2:#f6d5dc; --ink:#4a1f2e; --soft:#8a5565; --rose:#c2375b; --rose2:#a22a49; --card:#fffafaee;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#2a1220;--bg2:#431c33;--ink:#fbe6ec;--soft:#d9a5b6;--rose:#e0537a;--rose2:#c63f66;--card:#3a1a2cee}}
+:root[data-theme="dark"]{--bg:#2a1220;--bg2:#431c33;--ink:#fbe6ec;--soft:#d9a5b6;--rose:#e0537a;--rose2:#c63f66;--card:#3a1a2cee}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:radial-gradient(circle at 50% 20%,var(--bg2),var(--bg) 70%);color:var(--ink);font-family:'Nunito',system-ui,sans-serif;display:flex;align-items:center;justify-content:center;padding:24px;overflow-x:hidden}
+.card{position:relative;z-index:2;width:100%;max-width:460px;background:var(--card);border-radius:28px;padding:44px 28px;text-align:center;box-shadow:0 20px 60px rgba(194,55,91,.18)}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:clamp(28px,7vw,38px);line-height:1.2;margin:0 0 14px}
+p{margin:0 0 26px;color:var(--soft);font-size:17px;line-height:1.55}
+.heart{font-size:56px;display:block;margin-bottom:12px;animation:beat 1.4s infinite}
+@keyframes beat{0%,100%{transform:scale(1)}14%{transform:scale(1.18)}28%{transform:scale(1)}42%{transform:scale(1.12)}}
+.btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+button{font:600 17px 'Nunito',sans-serif;border:0;border-radius:999px;padding:14px 36px;cursor:pointer;transition:transform .15s,background .2s}
+button:focus-visible{outline:3px solid var(--rose);outline-offset:3px}
+#si{background:var(--rose);color:#fff}
+#si:hover{background:var(--rose2);transform:scale(1.06)}
+#no{background:transparent;color:var(--soft);border:1.5px solid var(--soft)}
+#no:hover{transform:scale(1.03)}
+.view[hidden]{display:none}
+.fade{animation:in .8s ease both}
+@keyframes in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.fall{position:fixed;top:-40px;z-index:1;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg);opacity:.9}}
+@media (prefers-reduced-motion:reduce){.heart,.fade,.fall{animation:none}}
+</style>
+</head>
+<body>
+<main class="card">
+  <section id="pregunta" class="view">
+    <span class="heart">💗</span>
+    <h1 id="titulo"></h1>
+    <p id="intro"></p>
+    <div class="btns">
+      <button id="si">Si</button>
+      <button id="si, pero espera">Si, pero espera</button>
+      <button id="no">No</button>
+    </div>
+  </section>
+
+  <section id="resp-si" class="view fade" hidden>
+    <span class="heart">💖</span>
+    <h1>¡Dijiste que sí!</h1>
+    <p id="msg-si"></p>
+  </section>
+
+  <section id="resp-pero-espera" class="view fade" hidden>
+    <span class="heart">💗</span>
+    <h1>Está bien, esperaré</h1>
+    <p id="msg-pero-espera"></p>
+  </section>
+
+  <section id="resp-no" class="view fade" hidden>
+    <span class="heart">🤍</span>
+    <h1>Está bien y acepto tu decisión</h1>
+    <p id="msg-no"></p>
+  </section>
+</main>
+
+<script>
+/* ✏️ PERSONALIZA AQUÍ */
+const NOMBRE = "Yose";                      // el nombre de ella
+const PREGUNTA = "¿Quieres ser mi novia?";   // o "¿Quieres ser mi novia/novio?"
+const INTRO = "Todo el tiempo que pasas a mi lado es especial.";
+const MENSAJE_SI = "Te prometo que te cuidere y te dare lo mejor de mi.  ";
+const MENSAJE_PERO_ESPERA = "Entiendo tu decisión te esperaré el tiempo quesea necesario.  ";
+const MENSAJE_NO = "Gracias por ser sincera conmigo y acepto tu decisión " + NOMBRE + ".  ";
+
+document.getElementById('titulo').textContent = NOMBRE + ", " + PREGUNTA.charAt(0).toLowerCase() + PREGUNTA.slice(1);
+document.getElementById('intro').textContent = INTRO;
+document.getElementById('msg-si').textContent = MENSAJE_SI;
+document.getElementById('msg-pero-espera').textContent = MENSAJE_PERO_ESPERA;
+document.getElementById('msg-no').textContent = MENSAJE_NO;
+
+function show(id){
+  document.querySelectorAll('.view').forEach(v => v.hidden = true);
+  document.getElementById(id).hidden = false;
+}
+function lluvia(){
+  const emojis = ['💖','💗','💕','🌹','✨','💘'];
+  for(let i=0;i<45;i++){
+    const s = document.createElement('span');
+    s.className = 'fall';
+    s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.fontSize = (16 + Math.random()*26) + 'px';
+    s.style.animationDuration = (3 + Math.random()*4) + 's';
+    s.style.animationDelay = (Math.random()*3) + 's';
+    document.body.appendChild(s);
+    setTimeout(() => s.remove(), 11000);
+  }
+}
+document.getElementById('si').addEventListener('click', () => { show('resp-si'); lluvia(); setInterval(lluvia, 6000); });
+document.getElementById('si, pero espera').addEventListener('click', () => { show('resp-pero-espera'); lluvia(); setInterval(lluvia, 6000); });
+document.getElementById('no').addEventListener('click', () => show('resp-no'));
+show('pregunta');
+</script>
+</body>
+</html>
